@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "kmeans.h"
+#include "debug.h"
 
 #define dim     3  // Number of Dimensions
 #define ndata   10  // Number of Datapoints
@@ -30,7 +31,7 @@ int main(int argc, const char * argv[]) {
     int cluster_start[k]; // Array start of each k cluster
     
     double **cluster_centroid; // For each cluster, have a mean for each dimension
-    double *cluster_radius;
+    double cluster_radius[k];
     int cluster_assign[totalCoordinates]; // Assigns each datapoint to a cluster, 0...k clusters
     
     // set clusters and cluster_start to 0
@@ -55,16 +56,8 @@ int main(int argc, const char * argv[]) {
     
     printData(data, totalCoordinates, dim);
     
-    //kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
+    kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
     
-    
-    
-    int dataElements[3] = {2, 7, 9}; // Create array requesting mean of elements 2 and 7.
-    int numberOfElements = 3; // We are requesting the mean of 2 total elements.
-    int indexOfDim = 3; // We are requesting the x dimension.
-    
-    double mean = getMeanOfSet(dataElements, numberOfElements, indexOfDim, dim, data);
-    printf("\nTotal Mean: %f\n", mean);
     
     
     return 0;

@@ -8,8 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "kmeans.h"
-
-#define NUM(a) (sizeof(a) / sizeof(*a))
+#include "debug.h"
 
 /* Element Data Stucture */
 
@@ -94,10 +93,18 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
         currentDistance = getDistanceBetween(chosenElementsForCentroids[0], i, data, dim);
     }
     
+    // If there is only 1 cluster. We are done.
+    if(k == 1)
+        return;
+    
     // Found largest distance cluster
     dataPoint = getElementAtIndex(dim, furthestElement, data); // Inital Cluster
     setClusterCentroid(dim, 1, dataPoint, cluster_centroid); // Set 2nd Cluster
     printCentroid(cluster_centroid, k, dim);
+    
+    // If there are 2 clusters. We are also done.
+    if(k == 2)
+        return;
     
     // Step 3
     
@@ -106,6 +113,8 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     
     // While not k dims
     while (numberOfSetClusters <= k) {
+        
+        
         
         // Get the mean of the current set of clusters
     }
@@ -139,8 +148,6 @@ double getMeanOfSet(int *dataElements, int numberOfElements, int indexOfDim, int
     for (int i = 0; i < numberOfElements; i++) {
         int elementIndex = dataElements[i]; // Gets each element index
         double *currentElement = getElementAtIndex(dim, elementIndex, data); // Gets the current element at specifed index
-        
-        
         
         totalMean += currentElement[indexOfDim]; // Gets the value of the element at specified dimension
     }
@@ -213,57 +220,3 @@ void swap(int dim, double *a, int x, int y) {
     }
 }
 
-
-/* debug functions */
-void printSpecificDataPoint(double *data, int requestedElement, int dim) {
-    printf("Element %d\n", requestedElement);
-    for (int i = 0; i < dim; i++) {
-        printf("array[%d]: %f\n", (dim * requestedElement) + i, data[(dim * requestedElement) + i]);
-    }
-}
-
-void printData(double *data, int totalElements, int dim) {
-    for (int i = 0; i < totalElements; i++) {
-        if(i % dim == 0) {
-            printf("Element %d\n", i / dim);
-        }
-        printf("array[%d]: %f\n", i, data[i]);
-    }
-}
-
-void printBoundry(double **cluster_bdry, int k, int dim) {
-    for (int i = 0; i < k; i++) {
-        for (int j = 0; j < dim*2; j++) {
-            printf("cluster_bdry[%d][%d]: %f\n", i, j, cluster_bdry[i][j]);
-        }
-    }
-}
-
-void printCentroid(double **cluster_centroid, int k, int dim) {
-    for (int i = 0; i < k; i++) {
-        for (int j = 0; j < dim; j++) {
-            printf("cluster_centroid[%d][%d]: %f\n", i, j, cluster_centroid[i][j]);
-        }
-    }
-}
-
-void printClusterSize(int *clusterSize, int k) {
-    for (int i = 0; i < k; i++) {
-        printf("cluster_size[%d]: %d\n", i, clusterSize[i]);
-    }
-}
-
-void printClusterStart(int *clusterStart, int k) {
-    for (int i = 0; i < k; i++) {
-        printf("cluster_start[%d]: %d\n", i, clusterStart[i]);
-    }
-}
-
-void printClusterAssign(int *clusterAssign, int ndata, int dim) {
-    for (int i = 0; i < ndata * dim; i++) {
-        if(i % dim == 0) {
-            printf("Element %d\n", i / dim);
-        }
-        printf("cluster_assign[%d]: %d\n", i, clusterAssign[i]);
-    }
-}
