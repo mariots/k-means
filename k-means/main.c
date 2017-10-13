@@ -51,21 +51,40 @@ int main(int argc, const char * argv[]) {
     
     printData(data, totalCoordinates, dim);
     
-    printf("\n\n");
-    int i = generateRandomElementIndex(ndata);
-    printf("index: %d \n\n", i);
-    
-    double *newData = getElementAtIndex(dim, i, data);
-    for (int i = 0; i < dim; i++) {
-        printf("newData[%d]: %f\n", i, newData[i]);
-    }
+    kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
     
     
     return 0;
 }
 
 /**
- Test case: Distance Function
+ Test case: getElementAtIndex function
+ 
+ Tested with:
+ #define dim     3  // Number of Dimensions
+ #define ndata   10  // Number of Datapoints
+ 
+ printf("\n\n");
+ int i = generateRandomElementIndex(ndata);
+ printf("index: %d \n\n", i);
+ 
+ double *newData = getElementAtIndex(dim, i, data);
+ for (int i = 0; i < dim; i++) {
+     printf("newData[%d]: %f\n", i, newData[i]);
+ }
+ 
+ Console:
+ 
+ index: 7
+ 
+ newData[0]: 69.000000
+ newData[1]: 9.000000
+ newData[2]: 57.000000
+ 
+ */
+
+/**
+ Test case: getDistanceBetween function
  
  Tested with:
  #define dim     3  // Number of Dimensions
@@ -84,5 +103,42 @@ int main(int argc, const char * argv[]) {
  
  Console:
  Distance: 70.007142
+ 
+ */
+
+/**
+ Test case: setClusterCentroid function
+ 
+ Tested with:
+ #define dim     3   // Number of Dimensions
+ #define ndata   10  // Number of Datapoints
+ #define k       3   // Number of Clusters
+ 
+ int randomIndex = generateRandomElementIndex(ndata);
+ double *dataPoint = getElementAtIndex(dim, randomIndex, data);
+ setClusterCentroid(dim, 0, dataPoint, cluster_centroid);
+ 
+ printf("Random Index: %d\n", randomIndex);
+ printCentroid(cluster_centroid, k, dim);
+ 
+ Console:
+ 
+ // NOTE: ** printData() was called above to see this **
+ Element 7
+ array[21]: 69.000000
+ array[22]: 9.000000
+ array[23]: 57.000000
+ 
+ Random Index: 7
+ 
+ cluster_centroid[0][0]: 69.000000
+ cluster_centroid[0][1]: 9.000000
+ cluster_centroid[0][2]: 57.000000
+ cluster_centroid[1][0]: 0.000000
+ cluster_centroid[1][1]: 0.000000
+ cluster_centroid[1][2]: 0.000000
+ cluster_centroid[2][0]: 0.000000
+ cluster_centroid[2][1]: 0.000000
+ cluster_centroid[2][2]: 0.000000
  
  */

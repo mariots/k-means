@@ -48,7 +48,9 @@ void setClusterCentroid(int dim, int cluster, double *data, double **cluster_cen
 }
 
 /* kmeans */
-int kmeans(int dim, int ndata, int totalCoordinates, int k, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
+int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
+    
+    initInitialClusters(dim, ndata, totalCoordinates, k, data, cluster_centroid);
     
     return 0;
 }
@@ -62,9 +64,13 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, int *cluster_size, i
      a. Get mean of all chosen centroids
      b. Using the calculated mean (x, y, .., dim) find largest distance and add to Centroid list
  */
-void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double **cluster_centroid) {
+void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double *data, double **cluster_centroid) {
     int randomIndex = generateRandomElementIndex(ndata);
-    cluster_centroid[0][0] = randomIndex;
+    double *dataPoint = getElementAtIndex(dim, randomIndex, data);
+    setClusterCentroid(dim, 0, dataPoint, cluster_centroid);
+    printCentroid(cluster_centroid, k, dim);
+    
+    
     
 }
 
@@ -151,14 +157,12 @@ void swap(int dim, double *a, int x, int y) {
 
 /* debug functions */
 void printData(double *data, int totalElements, int dim) {
-    
     for (int i = 0; i < totalElements; i++) {
         if(i % dim == 0) {
             printf("Element %d\n", i / dim);
         }
         printf("array[%d]: %f\n", i, data[i]);
     }
-    
 }
 
 void printBoundry(double **cluster_bdry, int k, int dim) {
