@@ -86,18 +86,13 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
         if(chosenElementsForCentroids[0] == i)
             continue; // If the currnet element is the same as the inital element, skip this iteration.
         
-        printf("Current Distance: %f\n", currentDistance);
-        printf("Largest Distance: %f at index: %d\n\n", largestDistance, i);
-        
         if(largestDistance < currentDistance) {
             furthestElement = i;
             largestDistance = currentDistance;
         }
         // Find the next current distance at the end of every test
         currentDistance = getDistanceBetween(chosenElementsForCentroids[0], i, data, dim);
-        
     }
-    printf("Largest Distance: %f at index: %d\n\n", largestDistance, furthestElement);
     
     // Found largest distance cluster
     dataPoint = getElementAtIndex(dim, furthestElement, data); // Inital Cluster
@@ -105,8 +100,18 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     printCentroid(cluster_centroid, k, dim);
     
     // Step 3
-    // For each found cluster get mean
+    
+    // We have set 2 clusters up to this point.
+    int numberOfSetClusters = 2;
+    
+    // While not k dims
+    while (numberOfSetClusters <= k) {
+        
+        // Get the mean of the current set of clusters
+    }
+    
     for (int i = 0; i < ndata; i++) {
+        
         
     }
     
@@ -126,9 +131,25 @@ double getDistanceBetween(int elementIndexA, int elementIndexB, double *data, in
     return sqrt(distance);
 }
 
+// For the elements passed in, return the mean of the requested dimension.
+double getMeanOfSet(int *dataElements, int numberOfElements, int indexOfDim, int dim, double *data) {
+    double totalMean = 0.0;
+    
+    // For every data point passed, get the sum(currentDimension)
+    for (int i = 0; i < numberOfElements; i++) {
+        int elementIndex = dataElements[i]; // Gets each element index
+        double *currentElement = getElementAtIndex(dim, elementIndex, data); // Gets the current element at specifed index
+        
+        
+        
+        totalMean += currentElement[indexOfDim]; // Gets the value of the element at specified dimension
+    }
+    
+    return totalMean / numberOfElements;
+}
 
 
-// Find mean of dataset
+
 double getMean(double *data, int ndata, int indexOfDim, int dim, double bdry[2]) {
     
     // index will be used to get the specific dimention
@@ -194,6 +215,13 @@ void swap(int dim, double *a, int x, int y) {
 
 
 /* debug functions */
+void printSpecificDataPoint(double *data, int requestedElement, int dim) {
+    printf("Element %d\n", requestedElement);
+    for (int i = 0; i < dim; i++) {
+        printf("array[%d]: %f\n", (dim * requestedElement) + i, data[(dim * requestedElement) + i]);
+    }
+}
+
 void printData(double *data, int totalElements, int dim) {
     for (int i = 0; i < totalElements; i++) {
         if(i % dim == 0) {

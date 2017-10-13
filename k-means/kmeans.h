@@ -21,6 +21,16 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
 
 double getDistanceBetween(int elementIndexA, int elementIndexB, double *data, int dim);
 
+// search
+// pick closest centroid as started
+// search that cluster
+// If theres a boundary closer to that point, search that cluster.
+
+
+// This is a specialized mean function.
+// Return the mean of the dimension of the individual elements passed in.
+double getMeanOfSet(int *dataElements, int numberOfElements, int indexOfDim, int dim, double *data);
+
 // Returns the mean of the data set passed in.
 double getMean(double *data, int ndata, int indexOfDim, int dim, double bdry[2]);
 
@@ -32,7 +42,9 @@ void swap(int dim, double *a, int i, int j);
 
 
 
+
 /* debug functions */
+void printSpecificDataPoint(double *data, int requestedElement, int dim);
 void printData(double *data, int totalElements, int dim);
 void printBoundry(double **cluster_bdry, int k, int dim);
 void printCentroid(double **cluster_centroid, int k, int dim);
