@@ -1,3 +1,5 @@
 .xcodeproj*
 
 k-means\.xcodeproj/
+
+*.out
