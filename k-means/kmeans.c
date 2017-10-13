@@ -9,6 +9,7 @@
 #include <math.h>
 #include "kmeans.h"
 
+#define NUM(a) (sizeof(a) / sizeof(*a))
 
 /* Element Data Stucture */
 
@@ -65,11 +66,34 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *c
      b. Using the calculated mean (x, y, .., dim) find largest distance and add to Centroid list
  */
 void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double *data, double **cluster_centroid) {
-    int randomIndex = generateRandomElementIndex(ndata);
-    double *dataPoint = getElementAtIndex(dim, randomIndex, data);
-    setClusterCentroid(dim, 0, dataPoint, cluster_centroid);
-    printCentroid(cluster_centroid, k, dim);
     
+    // Step 1
+    int initalElement = generateRandomElementIndex(ndata);
+    double *dataPoint = getElementAtIndex(dim, initalElement, data); // Inital Cluster
+    setClusterCentroid(dim, 0, dataPoint, cluster_centroid);
+    // printCentroid(cluster_centroid, k, dim); // TODO: Remove debug
+    
+    double largestDistance = 0.0;
+    double currentDistance = getDistanceBetween(initalElement, 0, data, dim);
+    int furthestElement = 0;
+    
+    // Step 2
+    // For every element in the dataset, find the element with the largest distance.
+    for (int i = 1; i < ndata; i++) { // We start at 1 because we already found the currentDistance at element 0
+        
+        if(largestDistance < currentDistance) {
+            furthestElement = i;
+            largestDistance = currentDistance;
+        }
+        // Find the next current distance at the end of every test
+        currentDistance = getDistanceBetween(initalElement, i, data, dim);
+    }
+    
+    // Found largest distance cluster
+    dataPoint = getElementAtIndex(dim, furthestElement, data); // Inital Cluster
+    setClusterCentroid(dim, 1, dataPoint, cluster_centroid); // Set 2nd centroid
+    
+    // Step 3
     
     
 }
