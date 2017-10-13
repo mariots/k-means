@@ -40,10 +40,32 @@ void setElementAtIndex(int dim, double *data, double *insert, int index) {
     // TODO
 }
 
+// Set a size dim data point to a specific cluster of the cluster_centroid
+void setClusterCentroid(int dim, int cluster, double *data, double **cluster_centroid) {
+    for (int i = 0; i < dim; i++) {
+        cluster_centroid[cluster][i] = data[i];
+    }
+}
+
 /* kmeans */
 int kmeans(int dim, int ndata, int totalCoordinates, int k, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
     
     return 0;
+}
+
+
+/*
+ Setting Inital Clusters.
+ 1. Choose random point as Centroid 1
+ 2. Choose Centroid 2 to be the largest distance from Centroid 1
+ 3. Until k Centroids are chosen
+     a. Get mean of all chosen centroids
+     b. Using the calculated mean (x, y, .., dim) find largest distance and add to Centroid list
+ */
+void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double **cluster_centroid) {
+    int randomIndex = generateRandomElementIndex(ndata);
+    cluster_centroid[0][0] = randomIndex;
+    
 }
 
 double getDistanceBetween(int elementIndexA, int elementIndexB, double *data, int dim) {

@@ -12,10 +12,12 @@ void generateData(int totalCoordinates, double *data);
 int generateRandomElementIndex(int ndata);
 double *getElementAtIndex(int dim, int elementIndex, double *data);
 void setElementAtIndex(int dim, double *data, double *insert, int elementIndex);
+void setClusterCentroid(int dim, int cluster, double *data, double **cluster_centroid);
 
 /* kmeans */
 int kmeans(int dim, int ndata, int totalCoordinates, int k, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign);
 
+void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double **cluster_centroid);
 
 double getDistanceBetween(int elementIndexA, int elementIndexB, double *data, int dim);
 
