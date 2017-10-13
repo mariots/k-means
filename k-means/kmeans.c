@@ -67,34 +67,48 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *c
  */
 void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double *data, double **cluster_centroid) {
     
+    int chosenElementsForCentroids[k];
+    
     // Step 1
-    int initalElement = generateRandomElementIndex(ndata);
-    double *dataPoint = getElementAtIndex(dim, initalElement, data); // Inital Cluster
+    chosenElementsForCentroids[0] = generateRandomElementIndex(ndata);
+    double *dataPoint = getElementAtIndex(dim, chosenElementsForCentroids[0], data); // Inital Cluster
     setClusterCentroid(dim, 0, dataPoint, cluster_centroid);
     // printCentroid(cluster_centroid, k, dim); // TODO: Remove debug
     
     double largestDistance = 0.0;
-    double currentDistance = getDistanceBetween(initalElement, 0, data, dim);
+    double currentDistance = getDistanceBetween(chosenElementsForCentroids[0], 0, data, dim);
     int furthestElement = 0;
     
     // Step 2
     // For every element in the dataset, find the element with the largest distance.
     for (int i = 1; i < ndata; i++) { // We start at 1 because we already found the currentDistance at element 0
         
+        if(chosenElementsForCentroids[0] == i)
+            continue; // If the currnet element is the same as the inital element, skip this iteration.
+        
+        printf("Current Distance: %f\n", currentDistance);
+        printf("Largest Distance: %f at index: %d\n\n", largestDistance, i);
+        
         if(largestDistance < currentDistance) {
             furthestElement = i;
             largestDistance = currentDistance;
         }
         // Find the next current distance at the end of every test
-        currentDistance = getDistanceBetween(initalElement, i, data, dim);
+        currentDistance = getDistanceBetween(chosenElementsForCentroids[0], i, data, dim);
+        
     }
+    printf("Largest Distance: %f at index: %d\n\n", largestDistance, furthestElement);
     
     // Found largest distance cluster
     dataPoint = getElementAtIndex(dim, furthestElement, data); // Inital Cluster
-    setClusterCentroid(dim, 1, dataPoint, cluster_centroid); // Set 2nd centroid
+    setClusterCentroid(dim, 1, dataPoint, cluster_centroid); // Set 2nd Cluster
+    printCentroid(cluster_centroid, k, dim);
     
     // Step 3
-    
+    // For each found cluster get mean
+    for (int i = 0; i < ndata; i++) {
+        
+    }
     
 }
 
