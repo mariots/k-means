@@ -1,11 +1,15 @@
 //
 //  debug.h
-//  Debug functions used for the purpose of testing
+//  k-means
 //
 //  Created by Mario Jimenez on 10/13/17.
+//  Copyright © 2017 mariot. All rights reserved.
+//
 
-#ifndef DEBUG   /* Include guard */
-#define DEBUG
+#ifndef debug_h
+#define debug_h
+
+#include <stdio.h>
 
 /* debug functions */
 void printSpecificDataPoint(double *data, int requestedElement, int dim);
@@ -15,5 +19,4 @@ void printCentroid(double **cluster_centroid, int k, int dim);
 void printClusterSize(int *clusterSize, int k);
 void printClusterStart(int *clusterStart, int k);
 
-#endif
-
+#endif /* debug_h */

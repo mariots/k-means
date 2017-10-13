@@ -13,8 +13,7 @@
 /* Element Data Stucture */
 
 // Generates 'random' data for the dataset
-void generateData(int totalCoordinates, double *data)
-{
+void generateData(int totalCoordinates, double *data) {
     srand(1);
     
     for(int i = 0; i < totalCoordinates; i++)
@@ -114,14 +113,14 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     // While not k dims
     while (numberOfSetClusters <= k) {
         
-        
+        return;
         
         // Get the mean of the current set of clusters
     }
     
     for (int i = 0; i < ndata; i++) {
         
-        
+        return;
     }
     
 }

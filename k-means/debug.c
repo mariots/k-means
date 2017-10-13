@@ -1,11 +1,12 @@
 //
 //  debug.c
-//  debug
+//  k-means
 //
 //  Created by Mario Jimenez on 10/13/17.
+//  Copyright © 2017 mariot. All rights reserved.
+//
 
 #include <stdio.h>
-#include <stdlib.h>
 #include "debug.h"
 
 /* debug functions */

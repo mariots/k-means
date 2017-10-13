@@ -58,8 +58,5 @@ int main(int argc, const char * argv[]) {
     
     kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
     
-    
-    
     return 0;
 }
-
