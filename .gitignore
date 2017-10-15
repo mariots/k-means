@@ -3,3 +3,7 @@
 k-means\.xcodeproj/
 
 *.out
+
+Index/
+
+Build/
