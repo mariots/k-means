@@ -84,7 +84,7 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     
     double largestDistance = 0.0;
     double currentDistance = getDistanceBetween(chosenElementsForCentroids[0], 0, data, dim);
-    int furthestElement = 0;
+    int furthestElement = 0; // I am using this name to remember what this does.
     
     // Step 2
     // For every element in the dataset, find the element with the largest distance.
@@ -100,6 +100,10 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
         // Find the next current distance at the end of every test
         currentDistance = getDistanceBetween(chosenElementsForCentroids[0], i, data, dim);
     }
+    
+    // I technically could have used this in the loop, but I wanted to remember exactly what the
+    // furthest element variable does.
+    chosenElementsForCentroids[1] = furthestElement;
     
     // If there is only 1 cluster. We are done.
     if(k == 1)
