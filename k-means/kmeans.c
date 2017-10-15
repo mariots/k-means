@@ -39,6 +39,13 @@ void setElementAtIndex(int dim, double *data, double *insert, int index) {
     // TODO
 }
 
+// Assigns an element from the cluster_centroid at specified index to the dataElement argument
+void getClusterCentroidElement(int dim, int cluster, double *dataElement, double **cluster_centroid) {
+    for (int i = 0; i < dim; i++) {
+        dataElement[i] = cluster_centroid[cluster][i];
+    }
+}
+
 // Set a size dim data point to a specific cluster of the cluster_centroid
 void setClusterCentroid(int dim, int cluster, double *data, double **cluster_centroid) {
     for (int i = 0; i < dim; i++) {
@@ -51,6 +58,7 @@ void setClusterCentroid(int dim, int cluster, double *data, double **cluster_cen
 int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
     
     initInitialClusters(dim, ndata, totalCoordinates, k, data, cluster_centroid);
+    
     
     return 0;
 }
@@ -85,9 +93,11 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     setClusterCentroid(dim, 0, dataElement, cluster_centroid);
     // printCentroid(cluster_centroid, k, dim); // TODO: Remove debug
     
-    currentDistance = getDistanceBetween(chosenElementsForCentroids[0], 0, data, dim);
-    
     // Step 2
+    
+    // Get the distance form the first element in the dataset and the first element in the cluster
+    currentDistance = getDistanceBetween(dataElement, getElementAtIndex(dim, 0, data), data, dim);
+    
     // For every element in the dataset, find the element with the largest distance.
     for (int i = 1; i < ndata; i++) { // We start at 1 because we already found the currentDistance at element 0
         
@@ -99,7 +109,7 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
             largestDistance = currentDistance;
         }
         // Find the next current distance at the end of every test
-        currentDistance = getDistanceBetween(chosenElementsForCentroids[0], i, data, dim);
+        currentDistance = getDistanceBetween(dataElement, getElementAtIndex(dim, i, data), data, dim);
     }
     
     // I technically could have used this in the loop, but I wanted to remember exactly what the
@@ -141,7 +151,10 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
                 if (chosenElementsForCentroids[clusterIndex] == -1)
                     continue;
                 
-                currentDistance += getDistanceBetween(elementIndex, chosenElementsForCentroids[clusterIndex], data, dim);
+                double *element = getElementAtIndex(dim, elementIndex, data);
+                double *clusterElement = getElementAtIndex(dim, chosenElementsForCentroids[clusterIndex], data);
+                
+                currentDistance += getDistanceBetween(element, clusterElement, data, dim);
             }
             
             if(largestDistance < currentDistance) {
@@ -168,19 +181,43 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
 
 void assignElementsToCentroids(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
     
+    double largestDistance = 0.0;
+    double currentDistance = 0.0;
+    int furthestElement = 0; // I am using this name to remember what this does.
     
+    // Reset largestDistance
+    largestDistance = 0.0;
+    
+    // For each element
+    for (int elementIndex = 0; elementIndex < ndata; elementIndex++) {
+        
+        // Reset currentDistance
+        currentDistance = 0.0;
+        
+        // For each cluster
+        for (int clusterIndex = 0; clusterIndex < k ; clusterIndex++) {
+            // Skip all clusters that have not been set.
+            
+            
+            
+            //currentDistance += getDistanceBetween(elementIndex, chosenElementsForCentroids[clusterIndex], data, dim);
+        }
+        
+        if(largestDistance < currentDistance) {
+            largestDistance = currentDistance;
+            furthestElement = elementIndex;
+        }
+    }
     
 }
 
-double getDistanceBetween(int elementIndexA, int elementIndexB, double *data, int dim) {
+double getDistanceBetween(double *elementIndexA, double *elementIndexB, double *data, int dim) {
     // Euclidian Distance Formula: d(a,b) = sqrt( (a1-b1)^2 + (a2-b2)^2 + (a3-b3)^2 + (a4-b4)^2 )
     
     double distance = 0.0;
-    double *tempElementA = getElementAtIndex(dim, elementIndexA, data);
-    double *tempElementB = getElementAtIndex(dim, elementIndexB, data);
     
     for (int i = 0; i < dim; i++) {
-        distance += ((tempElementA[i] - tempElementB[i]) * (tempElementA[i] - tempElementB[i]));
+        distance += ((elementIndexA[i] - elementIndexB[i]) * (elementIndexA[i] - elementIndexB[i]));
     }
     
     return sqrt(distance);

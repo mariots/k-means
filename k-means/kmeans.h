@@ -19,7 +19,7 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *c
 
 void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double *data, double **cluster_centroid);
 
-double getDistanceBetween(int elementIndexA, int elementIndexB, double *data, int dim);
+double getDistanceBetween(double *elementIndexA, double *elementIndexB, double *data, int dim);
 
 // search
 // pick closest centroid as started
