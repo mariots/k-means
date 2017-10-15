@@ -47,6 +47,7 @@ void setClusterCentroid(int dim, int cluster, double *data, double **cluster_cen
 }
 
 /* kmeans */
+
 int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
     
     initInitialClusters(dim, ndata, totalCoordinates, k, data, cluster_centroid);
@@ -66,6 +67,14 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *c
 void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double *data, double **cluster_centroid) {
     
     int chosenElementsForCentroids[k];
+    
+    // This is a little bit of a hack. In C I can't dynamically find the length of the array,
+    // so I dont know how many elements are set at a given time.
+    // I am making all the starting elements to be -1 to check against it at runtime
+    // and skip looking up elements whose values are not set.
+    for (int i = 0; i < k; i++) {
+        chosenElementsForCentroids[i] = -1;
+    }
     
     // Step 1
     chosenElementsForCentroids[0] = generateRandomElementIndex(ndata);
@@ -99,23 +108,30 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     // Found largest distance cluster
     dataPoint = getElementAtIndex(dim, furthestElement, data); // Inital Cluster
     setClusterCentroid(dim, 1, dataPoint, cluster_centroid); // Set 2nd Cluster
-    printCentroid(cluster_centroid, k, dim);
+    // printCentroid(cluster_centroid, k, dim);
     
     // If there are 2 clusters. We are also done.
     if(k == 2)
         return;
     
     // Step 3
-    
     // We have set 2 clusters up to this point.
     int numberOfSetClusters = 2;
     
     // While not k dims
-    while (numberOfSetClusters <= k) {
+    while (numberOfSetClusters < k) {
         
-        return;
+        // For each chosen cluster so far
+        for (int i = 0; i < k; i++) {
+            if(chosenElementsForCentroids[i] != 0) {
+                printf("Chosen Element[%d]: %d\n", i, chosenElementsForCentroids[i]);
+            }
+        }
+        
         
         // Get the mean of the current set of clusters
+        
+        numberOfSetClusters += 1;
     }
     
     for (int i = 0; i < ndata; i++) {
