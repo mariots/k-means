@@ -59,11 +59,15 @@ int main(int argc, const char * argv[]) {
     
     printData(data, totalCoordinates, dim);
     
-    kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
+    // kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
+    
+    setClusterAssign(dim, 2, 7, cluster_assign);
+    
+    printClusterAssign(cluster_assign, totalCoordinates, dim);
     
     
     // writes results to file
-    writeResults(data, cluster_assign);
+    //writeResults(data, cluster_assign);
     
     return 0;
 }

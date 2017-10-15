@@ -53,12 +53,22 @@ void setClusterCentroid(int dim, int cluster, double *data, double **cluster_cen
     }
 }
 
+void setClusterAssign(int dim, int cluster, int elementIndex, int *clusterAssign) {
+    printf("dim: %d, cluster: %d, clusterIndex: %d\n", dim, cluster, elementIndex);
+    for (int i = dim*elementIndex; i < dim*elementIndex + ; i++) {
+        
+        clusterAssign[i] = cluster;
+        printf("i: %d, cluster: %d\n", i, cluster);
+    }
+    
+}
+
 /* kmeans */
 
 int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
     
     initInitialClusters(dim, ndata, totalCoordinates, k, data, cluster_centroid);
-    
+    assignElementsToCentroids(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
     
     return 0;
 }
@@ -96,7 +106,7 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     // Step 2
     
     // Get the distance form the first element in the dataset and the first element in the cluster
-    currentDistance = getDistanceBetween(dataElement, getElementAtIndex(dim, 0, data), data, dim);
+    currentDistance = getDistanceBetween(dataElement, getElementAtIndex(dim, 0, data), dim);
     
     // For every element in the dataset, find the element with the largest distance.
     for (int i = 1; i < ndata; i++) { // We start at 1 because we already found the currentDistance at element 0
@@ -109,7 +119,7 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
             largestDistance = currentDistance;
         }
         // Find the next current distance at the end of every test
-        currentDistance = getDistanceBetween(dataElement, getElementAtIndex(dim, i, data), data, dim);
+        currentDistance = getDistanceBetween(dataElement, getElementAtIndex(dim, i, data), dim);
     }
     
     // I technically could have used this in the loop, but I wanted to remember exactly what the
@@ -154,7 +164,7 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
                 double *element = getElementAtIndex(dim, elementIndex, data);
                 double *clusterElement = getElementAtIndex(dim, chosenElementsForCentroids[clusterIndex], data);
                 
-                currentDistance += getDistanceBetween(element, clusterElement, data, dim);
+                currentDistance += getDistanceBetween(element, clusterElement, dim);
             }
             
             if(largestDistance < currentDistance) {
@@ -170,7 +180,7 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     }
     
     for (int i = 0; i < k; i++) {
-        printf("chosenElementsForCentroids[%d]: %d\n", i, chosenElementsForCentroids[i]);
+        //printf("chosenElementsForCentroids[%d]: %d\n", i, chosenElementsForCentroids[i]);
         
         dataElement = getElementAtIndex(dim, chosenElementsForCentroids[i], data);
         
@@ -179,41 +189,61 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     }
 }
 
+/*
+ For each element
+     For each cluster
+         Compare distances from element to each cluster
+         save cluster with shortest distance
+     Assign element to cluster with shortest distance
+ 
+*/
+
 void assignElementsToCentroids(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
     
-    double largestDistance = 0.0;
-    double currentDistance = 0.0;
-    int furthestElement = 0; // I am using this name to remember what this does.
-    
-    // Reset largestDistance
-    largestDistance = 0.0;
+    double currentDistance;
+    double smallestDistance;
+    int shortestCluster = 0;
+    double clusterElement[dim]; // Array to hold each clusterElement
     
     // For each element
     for (int elementIndex = 0; elementIndex < ndata; elementIndex++) {
         
-        // Reset currentDistance
+        printf("element[%d]\n", elementIndex);
+        
+        // Reset distances for next cluster
         currentDistance = 0.0;
+        smallestDistance = 0.0;
         
         // For each cluster
         for (int clusterIndex = 0; clusterIndex < k ; clusterIndex++) {
             // Skip all clusters that have not been set.
             
+            double *element = getElementAtIndex(dim, elementIndex, data);
+            getClusterCentroidElement(dim, clusterIndex, clusterElement, cluster_centroid);
             
+            currentDistance = getDistanceBetween(element, clusterElement, dim);
             
-            //currentDistance += getDistanceBetween(elementIndex, chosenElementsForCentroids[clusterIndex], data, dim);
+            printf("currentDistance: %f, shortestDistance: %f\n", currentDistance, smallestDistance);
+            // Since smallestDistance starts out as 0, the first time the loop runs I need to set it to currentDistance.
+            if (clusterIndex == 0) {
+                smallestDistance = currentDistance;
+                shortestCluster = clusterIndex;
+                printf("shortestCluster: %d\n\n", shortestCluster);
+            } else if(currentDistance < smallestDistance) {
+                shortestCluster = clusterIndex;
+                printf("shortestCluster: %d\n\n", shortestCluster);
+            }
         }
         
-        if(largestDistance < currentDistance) {
-            largestDistance = currentDistance;
-            furthestElement = elementIndex;
-        }
+        cluster_assign[elementIndex] = shortestCluster;
+        setClusterAssign(dim, shortestCluster, elementIndex, cluster_assign);
     }
     
+    printClusterAssign(cluster_assign, totalCoordinates, dim);
 }
 
-double getDistanceBetween(double *elementIndexA, double *elementIndexB, double *data, int dim) {
+double getDistanceBetween(double *elementIndexA, double *elementIndexB, int dim) {
     // Euclidian Distance Formula: d(a,b) = sqrt( (a1-b1)^2 + (a2-b2)^2 + (a3-b3)^2 + (a4-b4)^2 )
-    
     double distance = 0.0;
     
     for (int i = 0; i < dim; i++) {

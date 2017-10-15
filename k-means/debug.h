@@ -18,5 +18,6 @@ void printBoundry(double **cluster_bdry, int k, int dim);
 void printCentroid(double **cluster_centroid, int k, int dim);
 void printClusterSize(int *clusterSize, int k);
 void printClusterStart(int *clusterStart, int k);
+void printClusterAssign(int *clusterAssign, int totalElements, int dim);
 
 #endif /* debug_h */
