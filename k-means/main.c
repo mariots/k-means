@@ -14,8 +14,9 @@
 
 #define dim     3  // Number of Dimensions
 #define ndata   10  // Number of Datapoints
-#define k       3  // Number of Clusters
+#define k       4  // Number of Clusters
 
+// To visualize results
 void writeResults(double *data, int *cluster_assign);
 
 // Max Clusters: 128

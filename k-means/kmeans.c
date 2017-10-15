@@ -67,6 +67,9 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *c
 void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double *data, double **cluster_centroid) {
     
     int chosenElementsForCentroids[k];
+    double largestDistance = 0.0;
+    double currentDistance = 0.0;
+    int furthestElement = 0; // I am using this name to remember what this does.
     
     // This is a little bit of a hack. In C I can't dynamically find the length of the array,
     // so I dont know how many elements are set at a given time.
@@ -78,13 +81,11 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     
     // Step 1
     chosenElementsForCentroids[0] = generateRandomElementIndex(ndata);
-    double *dataPoint = getElementAtIndex(dim, chosenElementsForCentroids[0], data); // Inital Cluster
-    setClusterCentroid(dim, 0, dataPoint, cluster_centroid);
+    double *dataElement = getElementAtIndex(dim, chosenElementsForCentroids[0], data); // Inital Cluster
+    setClusterCentroid(dim, 0, dataElement, cluster_centroid);
     // printCentroid(cluster_centroid, k, dim); // TODO: Remove debug
     
-    double largestDistance = 0.0;
-    double currentDistance = getDistanceBetween(chosenElementsForCentroids[0], 0, data, dim);
-    int furthestElement = 0; // I am using this name to remember what this does.
+    currentDistance = getDistanceBetween(chosenElementsForCentroids[0], 0, data, dim);
     
     // Step 2
     // For every element in the dataset, find the element with the largest distance.
@@ -110,8 +111,8 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
         return;
     
     // Found largest distance cluster
-    dataPoint = getElementAtIndex(dim, furthestElement, data); // Inital Cluster
-    setClusterCentroid(dim, 1, dataPoint, cluster_centroid); // Set 2nd Cluster
+    dataElement = getElementAtIndex(dim, furthestElement, data); // Inital Cluster
+    setClusterCentroid(dim, 1, dataElement, cluster_centroid); // Set 2nd Cluster
     // printCentroid(cluster_centroid, k, dim);
     
     // If there are 2 clusters. We are also done.
@@ -125,24 +126,47 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
     // While not k dims
     while (numberOfSetClusters < k) {
         
-        // For each chosen cluster so far
-        for (int i = 0; i < k; i++) {
-            if(chosenElementsForCentroids[i] != 0) {
-                printf("Chosen Element[%d]: %d\n", i, chosenElementsForCentroids[i]);
+        // Reset largestDistance
+        largestDistance = 0.0;
+        
+        // For each element
+        for (int elementIndex = 0; elementIndex < ndata; elementIndex++) {
+            
+            printf("Element[%d]\n", elementIndex);
+            
+            // Reset currentDistance
+            currentDistance = 0.0;
+            
+            // For each cluster
+            for (int clusterIndex = 0; clusterIndex < k ; clusterIndex++) {
+                // Skip all clusters that have not been set.
+                if (chosenElementsForCentroids[clusterIndex] == -1)
+                    continue;
+                
+                printf("CurrentDistance: %f, ClusterIndex: %d\n", currentDistance, chosenElementsForCentroids[clusterIndex]);
+                
+                currentDistance += getDistanceBetween(elementIndex, chosenElementsForCentroids[clusterIndex], data, dim);
+            }
+            
+            printf("LargestDist: %f, CurrentDistance: %f, ElementIndex: %d\n", largestDistance, currentDistance, elementIndex);
+            if(largestDistance < currentDistance) {
+                largestDistance = currentDistance;
+                furthestElement = elementIndex;
+                printf("Furthest Element: %d\n", furthestElement);
             }
         }
         
+        printf("\n\n");
         
-        // Get the mean of the current set of clusters
+        // Found furthest element and set it to next cluster
+        chosenElementsForCentroids[numberOfSetClusters] = furthestElement;
         
         numberOfSetClusters += 1;
     }
     
-    for (int i = 0; i < ndata; i++) {
-        
-        return;
+    for (int i = 0; i < k; i++) {
+        printf("chosenElementsForCentroids[%d]: %d\n", i, chosenElementsForCentroids[i]);
     }
-    
 }
 
 double getDistanceBetween(int elementIndexA, int elementIndexB, double *data, int dim) {
