@@ -68,38 +68,40 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *c
     
     initInitialClusters(dim, ndata, totalCoordinates, k, data, cluster_centroid);
     
-    printf("iteration < maxIteration: %d < %d\n\n", iterations, maxIterations);
-    printf("meanChange > minMeanChange: %f > %f\n\n", meanChange, minMeanChange);
-    
-    assignElementsToCentroids(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
-    
-    // For each cluster, get and assign the mean
-    for (int cluster = 0; cluster < k; cluster++) {
-        
-        getClusterCentroidElement(dim, cluster, oldCluster, cluster_centroid);
-        
-        // Calculates new mean for the cluster passed in
-        calculateMeanForCluster(dim, ndata, k, cluster, data, cluster_centroid, cluster_assign);
-        
-        getClusterCentroidElement(dim, cluster, newCluster, cluster_centroid);
-        
-        for (int i = 0; i < dim; i++) {
-            printf("oldCluster[%d]: %f\n", i, oldCluster[i]);
-        }
-        
-        for (int i = 0; i < dim; i++) {
-            printf("newCluster[%d]: %f\n", i, newCluster[i]);
-        }
-        
-        // meanChange will stack the diffenece values
-        meanChange += getDistanceBetween(oldCluster, newCluster, dim);
-    }
-    
-    
+    printf("iteration < maxIteration: %d < %d\n", iterations, maxIterations);
+    printf("meanChange > minMeanChange: %f > %f\n", meanChange, minMeanChange);
     
     while (meanChange > minMeanChange && iterations < maxIterations) {
         
-       
+        printf("\niteration < maxIteration: %d < %d\n", iterations, maxIterations);
+        printf("meanChange > minMeanChange: %f > %f\n", meanChange, minMeanChange);
+        
+        meanChange = 0.0;
+        
+        assignElementsToCentroids(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
+        
+        // For each cluster, get and assign the mean
+        for (int cluster = 0; cluster < k; cluster++) {
+            
+            getClusterCentroidElement(dim, cluster, oldCluster, cluster_centroid);
+            
+            // Calculates new mean for the cluster passed in
+            calculateMeanForCluster(dim, ndata, k, cluster, data, cluster_centroid, cluster_assign);
+            
+            getClusterCentroidElement(dim, cluster, newCluster, cluster_centroid);
+            
+//            for (int i = 0; i < dim; i++) {
+//                printf("oldCluster[%d]: %f\n", i, oldCluster[i]);
+//            }
+//
+//            for (int i = 0; i < dim; i++) {
+//                printf("newCluster[%d]: %f\n", i, newCluster[i]);
+//            }
+            
+            // meanChange will stack the diffenece values
+            meanChange += getDistanceBetween(oldCluster, newCluster, dim);
+            printf("meanChange: %f\n", meanChange);
+        }
         
         iterations++;
     }
@@ -279,7 +281,7 @@ void assignElementsToCentroids(int dim, int ndata, int totalCoordinates, int k, 
         cluster_assign[elementIndex] = shortestCluster;
     }
     
-    printClusterAssign(cluster_assign, ndata);
+    // printClusterAssign(cluster_assign, ndata);
 }
 
 /*
@@ -303,9 +305,14 @@ void calculateMeanForCluster(int dim, int ndata, int k, int cluster, double *dat
             }
         }
         
-        for(int i = 0; i < count; i++) {
-            printf("elementsInCluster[%d]: %d\n" , i, elementsInCluster[i]);
+        // There is one or less elements in this cluster, dont change the mean.
+        if (count <= 1) {
+            return;
         }
+        
+//        for(int i = 0; i < count; i++) {
+//            printf("elementsInCluster[%d]: %d\n" , i, elementsInCluster[i]);
+//        }
         
         double mean = getMeanOfSet(elementsInCluster, count, dimIndex, dim, data);
         

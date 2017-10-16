@@ -14,7 +14,7 @@
 
 #define dim     2  // Number of Dimensions
 #define ndata   20  // Number of Datapoints
-#define k       5  // Number of Clusters
+#define k       3  // Number of Clusters
 
 // To visualize results
 void writeResults(double *data, int *cluster_assign);
@@ -27,7 +27,7 @@ void writeResults(double *data, int *cluster_assign);
 
 int main(int argc, const char * argv[]) {
     
-    int maxIterations = 4;
+    int maxIterations = 20;
     double minMeanChange = 1.5;
     
     int totalCoordinates = ndata*dim; // Total number of coordinates (x, y, z, ..., n)
@@ -60,7 +60,7 @@ int main(int argc, const char * argv[]) {
     // Generate our dataset
     generateData(totalCoordinates, data);
     
-    printData(data, totalCoordinates, dim);
+    // printData(data, totalCoordinates, dim);
     
     kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign, maxIterations, minMeanChange);
     
