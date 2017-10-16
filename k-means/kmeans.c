@@ -56,17 +56,60 @@ void setClusterCentroid(int dim, int cluster, double *data, double **cluster_cen
 
 /* kmeans */
 
-int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
+int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign, int maxIterations, double minMeanChange) {
+    
+    double meanChange = 2.0; // Starts as 2 to pass initial loop condition
+    int iterations = 0;
+    
+    // Get a copy of the old cluster
+    double oldCluster[dim];
+    // Get element for the new cluster
+    double newCluster[dim];
     
     initInitialClusters(dim, ndata, totalCoordinates, k, data, cluster_centroid);
     
+    printf("iteration < maxIteration: %d < %d\n\n", iterations, maxIterations);
+    printf("meanChange > minMeanChange: %f > %f\n\n", meanChange, minMeanChange);
+    
     assignElementsToCentroids(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
     
-    getRadiusForClusters(dim, ndata, k, data, cluster_radius, cluster_centroid, cluster_assign);
+    // For each cluster, get and assign the mean
+    for (int cluster = 0; cluster < k; cluster++) {
+        
+        getClusterCentroidElement(dim, cluster, oldCluster, cluster_centroid);
+        
+        // Calculates new mean for the cluster passed in
+        calculateMeanForCluster(dim, ndata, k, cluster, data, cluster_centroid, cluster_assign);
+        
+        getClusterCentroidElement(dim, cluster, newCluster, cluster_centroid);
+        
+        for (int i = 0; i < dim; i++) {
+            printf("oldCluster[%d]: %f\n", i, oldCluster[i]);
+        }
+        
+        for (int i = 0; i < dim; i++) {
+            printf("newCluster[%d]: %f\n", i, newCluster[i]);
+        }
+        
+        // meanChange will stack the diffenece values
+        meanChange += getDistanceBetween(oldCluster, newCluster, dim);
+    }
     
-    printClusterRadius(cluster_radius, k);
     
-    getClusterSize(ndata, k, cluster_size, cluster_assign);
+    
+    while (meanChange > minMeanChange && iterations < maxIterations) {
+        
+       
+        
+        iterations++;
+    }
+    
+    
+    //getRadiusForClusters(dim, ndata, k, data, cluster_radius, cluster_centroid, cluster_assign);
+    
+    //printClusterRadius(cluster_radius, k);
+    
+    //getClusterSize(ndata, k, cluster_size, cluster_assign);
     
     
     return 0;
@@ -237,6 +280,40 @@ void assignElementsToCentroids(int dim, int ndata, int totalCoordinates, int k, 
     }
     
     printClusterAssign(cluster_assign, ndata);
+}
+
+/*
+  For each cluster
+     Calculate and return mean
+*/
+void calculateMeanForCluster(int dim, int ndata, int k, int cluster, double *data, double **cluster_centroid, int *cluster_assign) {
+    
+    // For each dimension
+    for (int dimIndex = 0; dimIndex < dim; dimIndex++) {
+        
+        // We need to know what elements to test mean on
+        int elementsInCluster[ndata];
+        int count = 0; // We need a seperate counter to increment up
+        
+        // For each element that belongs in the specified cluster, add it to the list
+        for (int elementIndex = 0; elementIndex < ndata; elementIndex++) {
+            if(cluster == cluster_assign[elementIndex]) {
+                elementsInCluster[count] = elementIndex;
+                count += 1;
+            }
+        }
+        
+        for(int i = 0; i < count; i++) {
+            printf("elementsInCluster[%d]: %d\n" , i, elementsInCluster[i]);
+        }
+        
+        double mean = getMeanOfSet(elementsInCluster, count, dimIndex, dim, data);
+        
+        //printf("Mean: %f\n", mean);
+        cluster_centroid[cluster][dimIndex] = mean;
+    }
+    
+    
 }
 
 /*

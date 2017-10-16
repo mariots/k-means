@@ -15,10 +15,12 @@ void setElementAtIndex(int dim, double *data, double *insert, int elementIndex);
 void setClusterCentroid(int dim, int cluster, double *data, double **cluster_centroid);
 
 /* kmeans */
-int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign);
+int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign, int maxIterations, double minMeanChange);
 
 void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double *data, double **cluster_centroid);
 void assignElementsToCentroids(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign);
+void calculateMeanForCluster(int dim, int ndata, int k, int cluster, double *data, double **cluster_centroid, int *cluster_assign);
+
 void getRadiusForClusters(int dim, int ndata, int k, double *data, double *cluster_radius, double **cluster_centroid, int *cluster_assign);
 void getClusterSize(int ndata, int k, int *cluster_size, int *cluster_assign);
 
