@@ -8,14 +8,14 @@ with open('data.txt', 'r') as infile:
 	ndata = int(infile.readline().strip())
 	data = []
 	for i in range(dim * ndata):
-		data.append(float(infile.readline().strip()))		
+		data.append(float(infile.readline().strip()))
 	data = np.reshape(data, (ndata, dim))
-        
+
 	clusters = []
 	for i in range(ndata):
 		clusters.append(int(infile.readline().strip()))
 
-cluster_count = len(set(clusters)) // 2
+cluster_count = len(set(clusters))
 sns.set_style("whitegrid")
 cmap = ListedColormap(sns.color_palette("nipy_spectral", cluster_count)).colors
 cmap += ListedColormap(sns.color_palette("terrain", cluster_count)).colors

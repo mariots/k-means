@@ -12,7 +12,7 @@
 #include "kmeans.h"
 #include "debug.h"
 
-#define dim     3  // Number of Dimensions
+#define dim     2  // Number of Dimensions
 #define ndata   10  // Number of Datapoints
 #define k       3  // Number of Clusters
 
@@ -35,7 +35,7 @@ int main(int argc, const char * argv[]) {
     
     double **cluster_centroid; // For each cluster, have a mean for each dimension
     double cluster_radius[k];
-    int cluster_assign[totalCoordinates]; // Assigns each datapoint to a cluster, 0...k clusters
+    int cluster_assign[ndata]; // Assigns each element (note an element is ndata*dim values) to a cluster, 0...k clusters
     
     // set clusters and cluster_start to 0
     for (int i = 0; i < k; i++) {
@@ -43,7 +43,7 @@ int main(int argc, const char * argv[]) {
     }
     
     // set cluster_assign to all 0s
-    for (int i = 0; i < totalCoordinates; i++) {
+    for (int i = 0; i < ndata; i++) {
         cluster_assign[i] = 0;
     }
     
@@ -59,21 +59,18 @@ int main(int argc, const char * argv[]) {
     
     printData(data, totalCoordinates, dim);
     
-    // kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
-    
-    setClusterAssign(dim, 2, 7, cluster_assign);
-    
-    printClusterAssign(cluster_assign, totalCoordinates, dim);
+    kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
     
     
-    // writes results to file
-    //writeResults(data, cluster_assign);
+    
+    // writes results to file to be visualized
+    writeResults(data, cluster_assign);
     
     return 0;
 }
 
 
-// Copy and paste this into your source file - requires '#include <stdio.h>
+// Franks python visualization
 void writeResults(double *data, int *cluster_assign) {
     int i;
     FILE *file;

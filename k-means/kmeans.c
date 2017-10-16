@@ -53,22 +53,16 @@ void setClusterCentroid(int dim, int cluster, double *data, double **cluster_cen
     }
 }
 
-void setClusterAssign(int dim, int cluster, int elementIndex, int *clusterAssign) {
-    printf("dim: %d, cluster: %d, clusterIndex: %d\n", dim, cluster, elementIndex);
-    for (int i = dim*elementIndex; i < dim*elementIndex + ; i++) {
-        
-        clusterAssign[i] = cluster;
-        printf("i: %d, cluster: %d\n", i, cluster);
-    }
-    
-}
 
 /* kmeans */
 
 int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
     
     initInitialClusters(dim, ndata, totalCoordinates, k, data, cluster_centroid);
+    
     assignElementsToCentroids(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
+    getClusterSize(ndata, k, cluster_size, cluster_assign);
+    
     
     return 0;
 }
@@ -195,7 +189,6 @@ void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double
          Compare distances from element to each cluster
          save cluster with shortest distance
      Assign element to cluster with shortest distance
- 
 */
 
 void assignElementsToCentroids(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
@@ -208,7 +201,7 @@ void assignElementsToCentroids(int dim, int ndata, int totalCoordinates, int k, 
     // For each element
     for (int elementIndex = 0; elementIndex < ndata; elementIndex++) {
         
-        printf("element[%d]\n", elementIndex);
+        // printf("element[%d]\n", elementIndex);
         
         // Reset distances for next cluster
         currentDistance = 0.0;
@@ -223,23 +216,58 @@ void assignElementsToCentroids(int dim, int ndata, int totalCoordinates, int k, 
             
             currentDistance = getDistanceBetween(element, clusterElement, dim);
             
-            printf("currentDistance: %f, shortestDistance: %f\n", currentDistance, smallestDistance);
+            // printf("currentDistance: %f, shortestDistance: %f\n", currentDistance, smallestDistance);
             // Since smallestDistance starts out as 0, the first time the loop runs I need to set it to currentDistance.
             if (clusterIndex == 0) {
                 smallestDistance = currentDistance;
                 shortestCluster = clusterIndex;
-                printf("shortestCluster: %d\n\n", shortestCluster);
+                // printf("shortestCluster: %d\n\n", shortestCluster);
             } else if(currentDistance < smallestDistance) {
                 shortestCluster = clusterIndex;
-                printf("shortestCluster: %d\n\n", shortestCluster);
+                // printf("shortestCluster: %d\n\n", shortestCluster);
             }
         }
         
         cluster_assign[elementIndex] = shortestCluster;
-        setClusterAssign(dim, shortestCluster, elementIndex, cluster_assign);
     }
     
-    printClusterAssign(cluster_assign, totalCoordinates, dim);
+    printClusterAssign(cluster_assign, ndata);
+}
+
+/*
+  For each cluster
+     For each element in that cluster
+         Check to see if that element has the max distance.
+             If it does, the distance is the radius to the centroid of the cluster.
+*/
+void getRadiusForClusters(int dim, int ndata, int totalCoordinates, int k, double *data, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
+    
+    
+    
+}
+
+/*
+     For each cluster
+         For each element in cluster assign
+             Count every time an element appears for a cluster and add it to the total number for that cluster
+*/
+void getClusterSize(int ndata, int k, int *cluster_size, int *cluster_assign) {
+    int count;
+    
+    // For each cluster
+    for (int cluster = 0; cluster < k; cluster++) {
+        
+        // Reset the count
+        count = 0;
+        
+        // For each index in clusterAssign
+        for (int clusterIndex = 0; clusterIndex < ndata; clusterIndex++) {
+            if(cluster == cluster_assign[clusterIndex])
+                count += 1;
+        }
+        
+        cluster_size[cluster] = count; // Set cluster size for that cluster
+    }
 }
 
 double getDistanceBetween(double *elementIndexA, double *elementIndexB, int dim) {
