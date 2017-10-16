@@ -19,5 +19,7 @@ void printCentroid(double **cluster_centroid, int k, int dim);
 void printClusterSize(int *clusterSize, int k);
 void printClusterStart(int *clusterStart, int k);
 void printClusterAssign(int *clusterAssign, int ndata);
+void printClusterRadius(int *clusterRadius, int k);
+
 
 #endif /* debug_h */
