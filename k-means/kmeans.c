@@ -396,6 +396,9 @@ double getDistanceBetween(double *elementIndexA, double *elementIndexB, int dim)
 double getMeanOfSet(int *dataElements, int numberOfElements, int indexOfDim, int dim, double *data) {
     double totalMean = 0.0;
     
+    if(numberOfElements == 0)
+        return 0;
+    
     // For every data point passed, get the sum(currentDimension)
     for (int i = 0; i < numberOfElements; i++) {
         int elementIndex = dataElements[i]; // Gets each element index
@@ -438,37 +441,4 @@ double getMean(double *data, int ndata, int indexOfDim, int dim, double bdry[2])
     return (total / ndata);
 }
 
-
-double getVariance(double *data, int ndata, int mean, int indexOfDim, int dim) {
-    
-    double total = 0;
-    
-    for (int i = 0; i < ndata; i++) {
-        total += (data[(i * dim) + indexOfDim] - mean) * (data[(i * dim) + indexOfDim] - mean);
-    }
-    
-    return (total / ndata);
-}
-
-
-/*
- 
- Swap takes in the number of dimensions, an array and the
- index's of the elements to be swaped.
- 
- ex: swap(3, data, 1, 3); // Elements 1, and 3 are swaped.
- 
- */
-void swap(int dim, double *a, int x, int y) {
-    
-    double tmp;
-    x *= dim; // Setting x and y index to the correct index to swap
-    y *= dim;
-    
-    for (int i = 0; i < dim; i++) {
-        tmp = a[x+i];
-        a[x+i] = a[y+i];
-        a[y+i] = tmp;
-    }
-}
 

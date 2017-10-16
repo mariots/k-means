@@ -13,8 +13,8 @@
 #include "debug.h"
 
 #define dim     2  // Number of Dimensions
-#define ndata   10  // Number of Datapoints
-#define k       3  // Number of Clusters
+#define ndata   20  // Number of Datapoints
+#define k       5  // Number of Clusters
 
 // To visualize results
 void writeResults(double *data, int *cluster_assign);
@@ -26,6 +26,9 @@ void writeResults(double *data, int *cluster_assign);
 // Definition: An Element is a set of coordinates (x, y, z, ..., n) of size dim.
 
 int main(int argc, const char * argv[]) {
+    
+    int maxIterations = 4;
+    double minMeanChange = 1.5;
     
     int totalCoordinates = ndata*dim; // Total number of coordinates (x, y, z, ..., n)
     double data[ndata * dim]; // Number of data points
@@ -59,9 +62,7 @@ int main(int argc, const char * argv[]) {
     
     printData(data, totalCoordinates, dim);
     
-    kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
-    
-    
+    kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign, maxIterations, minMeanChange);
     
     // writes results to file to be visualized
     writeResults(data, cluster_assign);

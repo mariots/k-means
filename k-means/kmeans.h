@@ -40,11 +40,5 @@ double getMeanOfSet(int *dataElements, int numberOfElements, int indexOfDim, int
 // Returns the mean of the data set passed in.
 double getMean(double *data, int ndata, int indexOfDim, int dim, double bdry[2]);
 
-// Return the variance of the data set passed in.
-double getVariance(double *data, int ndata, int mean,  int indexOfDim, int dim);
-
-// Swap takes in the number of dimensions, an array and the index's of the elements to be swaped.
-void swap(int dim, double *a, int i, int j);
-
 
 #endif
