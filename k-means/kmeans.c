@@ -61,6 +61,11 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *c
     initInitialClusters(dim, ndata, totalCoordinates, k, data, cluster_centroid);
     
     assignElementsToCentroids(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign);
+    
+    getRadiusForClusters(dim, ndata, k, data, cluster_radius, cluster_centroid, cluster_assign);
+    
+    printClusterRadius(cluster_radius, k);
+    
     getClusterSize(ndata, k, cluster_size, cluster_assign);
     
     
@@ -240,10 +245,39 @@ void assignElementsToCentroids(int dim, int ndata, int totalCoordinates, int k, 
          Check to see if that element has the max distance.
              If it does, the distance is the radius to the centroid of the cluster.
 */
-void getRadiusForClusters(int dim, int ndata, int totalCoordinates, int k, double *data, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
+void getRadiusForClusters(int dim, int ndata, int k, double *data, double *cluster_radius, double **cluster_centroid, int *cluster_assign) {
     
+    double largestDistance;
+    double currentDistance;
+    double clusterElement[dim]; // Array to hold each clusterElement
     
-    
+    // For each cluster
+    for (int cluster = 0; cluster < k; cluster++) {
+        
+        // Reset the count
+        largestDistance = 0.0;
+        currentDistance = 0.0;
+        
+        // For each index in clusterAssign
+        for (int elementIndex = 0; elementIndex < ndata; elementIndex++) {
+            if(cluster == cluster_assign[elementIndex]) {
+                
+                printf("Element Index: %d\n", elementIndex);
+                double *element = getElementAtIndex(dim, elementIndex, data);
+                getClusterCentroidElement(dim, cluster, clusterElement, cluster_centroid);
+                
+                currentDistance = getDistanceBetween(element, clusterElement, dim);
+                printf("currentDistance: %f, largestDistance: %f\n", currentDistance, largestDistance);
+                
+                if(largestDistance < currentDistance) {
+                    largestDistance = currentDistance;
+                }
+            }
+        }
+        
+        printf("\n\n");
+        cluster_radius[cluster] = largestDistance; // Set radius for that cluster
+    }
 }
 
 /*

@@ -19,7 +19,9 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *c
 
 void initInitialClusters(int dim, int ndata, int totalCoordinates, int k, double *data, double **cluster_centroid);
 void assignElementsToCentroids(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, int *cluster_start, double *cluster_radius, double **cluster_centroid, int *cluster_assign);
+void getRadiusForClusters(int dim, int ndata, int k, double *data, double *cluster_radius, double **cluster_centroid, int *cluster_assign);
 void getClusterSize(int ndata, int k, int *cluster_size, int *cluster_assign);
+
 
 double getDistanceBetween(double *elementIndexA, double *elementIndexB, int dim);
 

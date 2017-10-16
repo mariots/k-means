@@ -60,8 +60,8 @@ void printClusterAssign(int *clusterAssign, int ndata) {
     }
 }
 
-void printClusterRadius(int *clusterRadius, int k) {
+void printClusterRadius(double *clusterRadius, int k) {
     for (int i = 0; i < k; i++) {
-        printf("cluster_radius[%d]: %d\n", i, clusterRadius[i]);
+        printf("cluster_radius[%d]: %f\n", i, clusterRadius[i]);
     }
 }
