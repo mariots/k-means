@@ -68,13 +68,13 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *c
     
     initInitialClusters(dim, ndata, totalCoordinates, k, data, cluster_centroid);
     
-    printf("iteration < maxIteration: %d < %d\n", iterations, maxIterations);
-    printf("meanChange > minMeanChange: %f > %f\n", meanChange, minMeanChange);
+//    printf("iteration < maxIteration: %d < %d\n", iterations, maxIterations);
+//    printf("meanChange > minMeanChange: %f > %f\n", meanChange, minMeanChange);
     
     while (meanChange > minMeanChange && iterations < maxIterations) {
         
-        printf("\niteration < maxIteration: %d < %d\n", iterations, maxIterations);
-        printf("meanChange > minMeanChange: %f > %f\n", meanChange, minMeanChange);
+//        printf("\niteration < maxIteration: %d < %d\n", iterations, maxIterations);
+//        printf("meanChange > minMeanChange: %f > %f\n", meanChange, minMeanChange);
         
         meanChange = 0.0;
         
@@ -100,19 +100,20 @@ int kmeans(int dim, int ndata, int totalCoordinates, int k, double *data, int *c
             
             // meanChange will stack the diffenece values
             meanChange += getDistanceBetween(oldCluster, newCluster, dim);
-            printf("meanChange: %f\n", meanChange);
+            // printf("meanChange: %f\n", meanChange);
         }
         
         iterations++;
     }
     
     
-    //getRadiusForClusters(dim, ndata, k, data, cluster_radius, cluster_centroid, cluster_assign);
+    getRadiusForClusters(dim, ndata, k, data, cluster_radius, cluster_centroid, cluster_assign);
     
-    //printClusterRadius(cluster_radius, k);
+    // printClusterRadius(cluster_radius, k);
     
-    //getClusterSize(ndata, k, cluster_size, cluster_assign);
+    getClusterSize(ndata, k, cluster_size, cluster_assign);
     
+    // printClusterSize(cluster_size, k);
     
     return 0;
 }
@@ -346,12 +347,12 @@ void getRadiusForClusters(int dim, int ndata, int k, double *data, double *clust
         for (int elementIndex = 0; elementIndex < ndata; elementIndex++) {
             if(cluster == cluster_assign[elementIndex]) {
                 
-                printf("Element Index: %d\n", elementIndex);
+                //printf("Element Index: %d\n", elementIndex);
                 double *element = getElementAtIndex(dim, elementIndex, data);
                 getClusterCentroidElement(dim, cluster, clusterElement, cluster_centroid);
                 
                 currentDistance = getDistanceBetween(element, clusterElement, dim);
-                printf("currentDistance: %f, largestDistance: %f\n", currentDistance, largestDistance);
+                //printf("currentDistance: %f, largestDistance: %f\n", currentDistance, largestDistance);
                 
                 if(largestDistance < currentDistance) {
                     largestDistance = currentDistance;
@@ -359,7 +360,7 @@ void getRadiusForClusters(int dim, int ndata, int k, double *data, double *clust
             }
         }
         
-        printf("\n\n");
+        //printf("\n\n");
         cluster_radius[cluster] = largestDistance; // Set radius for that cluster
     }
 }
@@ -388,6 +389,61 @@ void getClusterSize(int ndata, int k, int *cluster_size, int *cluster_assign) {
     }
 }
 
+void search(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, double *cluster_radius, double **cluster_centroid, int *cluster_assign, double *searchElement, double *returnElement) {
+    
+    int returnElementIndex = 0;
+    double smallestDistance = 0.0;
+    double currentDistance = 0.0;
+    
+    int clustersToSearch[k]; // Which clusters to search
+    int clusterCount = 0;
+    
+    // Find which clusters to check based on the radius
+    for (int cluster = 0; cluster < k; cluster++) {
+        
+        double distanceToCentroid = getDistanceBetween(cluster_centroid[cluster], searchElement, dim);
+        
+        printf("distanceToCentroid: %f, cluster_radius[cluster]: %f\n", distanceToCentroid, cluster_radius[cluster]);
+        
+        // We know which clusters to search
+        // If distance form searchElement to centroid is less than the radius, it is within the cluster.
+        if(distanceToCentroid < cluster_radius[cluster]) {
+            clustersToSearch[clusterCount] = cluster;
+            clusterCount++;
+            
+            printf("clustersToSearch[%d]: %d", clusterCount, clustersToSearch[clusterCount]);
+        }
+    }
+    
+    for (int i = 0; i < k; i++) {
+        printf("clustersToSearch[%d]: %d\n", i, clustersToSearch[i]);
+    }
+    
+    
+    
+    // For each cluster
+    for (int cluster = 0; cluster < clusterCount; cluster++) {
+        
+        // TODO: If cluster is not in clusterToSearch array, skip this iteration
+        
+        // We need to know what elements to test mean on
+        int elementsInCluster[ndata];
+        int count = 0; // We need a seperate counter to increment up
+        
+        // For each element that belongs in the specified cluster, add it to the list
+        for (int elementIndex = 0; elementIndex < ndata; elementIndex++) {
+            if(cluster == cluster_assign[elementIndex]) {
+                elementsInCluster[count] = elementIndex;
+                count += 1;
+            }
+        }
+    }
+    
+    // Set the closest element by the index
+    returnElement = getElementAtIndex(dim, returnElementIndex, data);
+}
+
+
 double getDistanceBetween(double *elementIndexA, double *elementIndexB, int dim) {
     // Euclidian Distance Formula: d(a,b) = sqrt( (a1-b1)^2 + (a2-b2)^2 + (a3-b3)^2 + (a4-b4)^2 )
     double distance = 0.0;
@@ -415,37 +471,6 @@ double getMeanOfSet(int *dataElements, int numberOfElements, int indexOfDim, int
     }
     
     return totalMean / numberOfElements;
-}
-
-
-
-double getMean(double *data, int ndata, int indexOfDim, int dim, double bdry[2]) {
-    
-    // index will be used to get the specific dimention
-    // dim will be used to iterate over the current dimension
-    
-    double total = 0;
-    double min = data[indexOfDim];
-    double max = data[indexOfDim];
-    
-    for (int i = 0; i < ndata; i++) {
-        
-        // The index moves every dim elements plus the current dimension
-        total += data[(i * dim) + indexOfDim];
-        if(data[i] < min) {
-            min = data[(i * dim) + indexOfDim];
-        }
-        
-        if(data[i] > max) {
-            max = data[(i * dim) + indexOfDim];
-        }
-    }
-    
-    // For each dim, set the min/max
-    bdry[0] = min;
-    bdry[1] = max;
-    
-    return (total / ndata);
 }
 
 

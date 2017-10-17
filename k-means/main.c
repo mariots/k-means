@@ -64,6 +64,15 @@ int main(int argc, const char * argv[]) {
     
     kmeans(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_start, cluster_radius, cluster_centroid, cluster_assign, maxIterations, minMeanChange);
     
+    double searchElement[dim] = { 1, 1 }; // test case only works for 2 dimensions
+    double returnElement[dim];
+    
+    search(dim, ndata, totalCoordinates, k, data, cluster_size, cluster_radius, cluster_centroid, cluster_assign, searchElement, returnElement);
+    
+    for (int i = 0; i < dim; i++) {
+        printf("returnElement[%d]: %f\n", i, returnElement[i]);
+    }
+    
     // writes results to file to be visualized
     writeResults(data, cluster_assign);
     

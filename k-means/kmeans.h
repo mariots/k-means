@@ -24,21 +24,17 @@ void calculateMeanForCluster(int dim, int ndata, int k, int cluster, double *dat
 void getRadiusForClusters(int dim, int ndata, int k, double *data, double *cluster_radius, double **cluster_centroid, int *cluster_assign);
 void getClusterSize(int ndata, int k, int *cluster_size, int *cluster_assign);
 
+// search
+// Given an element
+// Find which clusters contain that element
+// Search 
+void search(int dim, int ndata, int totalCoordinates, int k, double *data, int *cluster_size, double *cluster_radius, double **cluster_centroid, int *cluster_assign, double *searchElement, double *returnElement);
 
 double getDistanceBetween(double *elementIndexA, double *elementIndexB, int dim);
-
-// search
-// pick closest centroid as started
-// search that cluster
-// If theres a boundary closer to that point, search that cluster.
-
 
 // This is a specialized mean function.
 // Return the mean of the dimension of the individual elements passed in.
 double getMeanOfSet(int *dataElements, int numberOfElements, int indexOfDim, int dim, double *data);
-
-// Returns the mean of the data set passed in.
-double getMean(double *data, int ndata, int indexOfDim, int dim, double bdry[2]);
 
 
 #endif
