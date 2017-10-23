@@ -18,8 +18,7 @@ void generateData(int totalCoordinates, double *data) {
     
     for(int i = 0; i < totalCoordinates; i++)
     {
-        double temp = (double)(rand() % 100);
-        data[i] = temp;
+        data[i] = (double)(rand() % 100);
     }
 }
 
@@ -32,11 +31,6 @@ int generateRandomElementIndex(int ndata) {
 // Returns element at specified index
 double *getElementAtIndex(int dim, int elementIndex, double *data) {
     return &data[dim*elementIndex]; // [dim * elementIndex]: will give the starting index of the element requested
-}
-
-// Sets the element at index i, to the data provided
-void setElementAtIndex(int dim, double *data, double *insert, int index) {
-    // TODO
 }
 
 // Assigns an element from the cluster_centroid at specified index to the dataElement argument
