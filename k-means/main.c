@@ -9,12 +9,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "kmeans.h"
+#include <mpi.h>
+#include "kmeans-sequential.h"
+#include "kmeans-parallel.h"
 #include "debug.h"
 
-#define dim     2  // Number of Dimensions
-#define ndata   20  // Number of Datapoints
-#define k       3  // Number of Clusters
+#define dim     2           // Number of Dimensions
+#define ndata   24          // Number of Datapoints
+#define k       3           // Number of Clusters
+#define maxIterations 20    // Max number of k-means iterations
+#define minMeanChange 1.5   // Minimum amount of change before iterations cease
 
 // To visualize results
 void writeResults(double *data, int *cluster_assign);
@@ -27,9 +31,7 @@ void writeResults(double *data, int *cluster_assign);
 
 int main(int argc, const char * argv[]) {
     
-    int maxIterations = 20;
-    double minMeanChange = 1.5;
-    
+    // Setup variables
     int totalCoordinates = ndata*dim; // Total number of coordinates (x, y, z, ..., n)
     double data[ndata * dim]; // Number of data points
     
