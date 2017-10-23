@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "kmeans.h"
+#include "kmeans-sequential.h"
 #include "debug.h"
 
 /* Element Data Stucture */
